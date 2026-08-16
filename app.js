@@ -65,6 +65,10 @@ const Utils = {
 const Cache = {
   // 加载数据：有有效缓存直接用；无缓存或已过期则 fetch data.json 并写入缓存
   loadData() {
+    // 部署版优先使用内嵌数据（data.js），站点不暴露独立的 data.json 文件
+    if (window.__APP_DATA__) {
+      return Promise.resolve(window.__APP_DATA__);
+    }
     const cached = this._readCache();
     if (cached) {
       return Promise.resolve(cached);

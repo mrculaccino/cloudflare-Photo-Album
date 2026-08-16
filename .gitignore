@@ -1,0 +1,3 @@
+# 构建产物（Cloudflare Pages 会通过 npm run build 自动生成，无需入库）
+dist/
+node_modules/

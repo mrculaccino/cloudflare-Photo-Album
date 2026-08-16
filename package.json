@@ -1,0 +1,9 @@
+{
+  "name": "thedupe-showcase",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TheDupe - static bag showcase SPA (data.json is bundled into data.js at build time, never deployed as a raw file)",
+  "scripts": {
+    "build": "node build.mjs"
+  }
+}
