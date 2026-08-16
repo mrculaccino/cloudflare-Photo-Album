@@ -63,26 +63,33 @@ const Utils = {
 
 /* ================= 2. Cache 数据缓存模块 ================= */
 const Cache = {
-  // 加载数据：有有效缓存直接用；无缓存或已过期则 fetch data.json 并写入缓存
+  // 加载数据：
+  // 1) 生产环境优先请求 Pages Function /api/data（WhatsApp 号码由环境变量注入）
+  // 2) 无函数时降级到内嵌 data.js / localStorage 缓存 / data.json（本地开发）
   loadData() {
-    // 部署版优先使用内嵌数据（data.js），站点不暴露独立的 data.json 文件
-    if (window.__APP_DATA__) {
-      return Promise.resolve(window.__APP_DATA__);
-    }
-    const cached = this._readCache();
-    if (cached) {
-      return Promise.resolve(cached);
-    }
-    return fetch('data.json', { cache: 'no-store' })
+    return fetch('/api/data', { cache: 'no-store' })
       .then(response => {
-        if (!response.ok) {
-          throw new Error('请求失败 (HTTP ' + response.status + ')');
-        }
+        if (!response.ok) throw new Error('API 请求失败 (HTTP ' + response.status + ')');
         return response.json();
       })
       .then(data => {
         this._writeCache(data);
         return data;
+      })
+      .catch(() => {
+        // 降级：内嵌数据（data.js）→ localStorage 缓存 → data.json（仅本地）
+        if (window.__APP_DATA__) return window.__APP_DATA__;
+        const cached = this._readCache();
+        if (cached) return cached;
+        return fetch('data.json', { cache: 'no-store' })
+          .then(response => {
+            if (!response.ok) throw new Error('请求失败 (HTTP ' + response.status + ')');
+            return response.json();
+          })
+          .then(data => {
+            this._writeCache(data);
+            return data;
+          });
       });
   },
 
