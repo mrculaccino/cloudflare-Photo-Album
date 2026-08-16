@@ -297,11 +297,12 @@ const Renderer = {
         <section class="section">
           <div class="category-grid">${cards}</div>
         </section>
+        ${chatHref ? `
         <section class="more-styles">
           <p class="more-styles-text">Looking for more styles? Please contact us via
             <a class="more-styles-link" href="${chatHref}" target="_blank" rel="noopener">WhatsApp</a>.
           </p>
-        </section>
+        </section>` : ''}
         ${shots ? `
         <section class="section">
           <h2 class="section-title">📸 Customer Reviews &amp; Receipts</h2>
@@ -394,6 +395,7 @@ const Renderer = {
         </div>
         <div class="detail-body">
           <h1 class="detail-name">${Utils.esc(product.name)}</h1>
+          ${CONFIG.waNumber ? `
           <div class="detail-meta">
             ${skuHtml}
             <button type="button" class="detail-inquire" data-action="wa-inquire" data-product-id="${Utils.esc(product.id)}">Inquire</button>
@@ -403,7 +405,10 @@ const Renderer = {
           <a class="wa-btn" data-action="wa-inquire" data-product-id="${Utils.esc(product.id)}"
              href="${waHref}" target="_blank" rel="noopener">
             💬 Inquire via WhatsApp
-          </a>
+          </a>` : `
+          <div class="detail-meta">${skuHtml}</div>
+          ${descHtml}
+          ${specsHtml}`}
         </div>
       </div>`;
   },
@@ -632,8 +637,13 @@ const App = {
     const logo = document.getElementById('siteLogo');
     const chat = document.getElementById('chatLink');
     if (logo) logo.textContent = data.siteName || 'TheDupe';
-    if (chat && CONFIG.waNumber) {
-      chat.href = Utils.waLink(CONFIG.waNumber, "Hi! I'd like to know more about your products.");
+    if (chat) {
+      if (CONFIG.waNumber) {
+        chat.href = Utils.waLink(CONFIG.waNumber, "Hi! I'd like to know more about your products.");
+        chat.classList.remove('hidden');
+      } else {
+        chat.classList.add('hidden'); // 号码未配置时不显示失效的 Chat 按钮
+      }
     }
     document.title = data.siteName || 'TheDupe';
   },
