@@ -1,0 +1,6 @@
+# Cloudflare 静态资产忽略规则（语法同 .gitignore）
+# 防止构建环境里的 node_modules/workerd（144MB）等文件被当作站点资产上传
+node_modules/
+.git/
+dist/
+*.log

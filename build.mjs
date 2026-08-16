@@ -29,7 +29,10 @@ writeFileSync(join(dist, 'data.js'), dataJs, 'utf8');
 // 3) 复制页面与逻辑文件（data.json 不进入部署产物）
 copyFileSync(join(root, 'index.html'), join(dist, 'index.html'));
 copyFileSync(join(root, 'app.js'), join(dist, 'app.js'));
+// 4) 把 .assetsignore 也复制进 dist/，确保 Cloudflare 无论把 assets 目录
+//    指向仓库根还是 dist，都会忽略 node_modules/ 等大文件
+copyFileSync(join(root, '.assetsignore'), join(dist, '.assetsignore'));
 
 console.log('build done -> dist/');
-console.log('dist files:', ['index.html', 'app.js', 'data.js'].join(', '));
+console.log('dist files:', ['index.html', 'app.js', 'data.js', '.assetsignore'].join(', '));
 console.log('data.json is NOT included in the deploy output.');
