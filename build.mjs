@@ -9,12 +9,14 @@
  *   构建命令：npm run build
  *   输出目录：dist
  */
-import { mkdirSync, readFileSync, writeFileSync, copyFileSync } from 'fs';
+import { mkdirSync, readFileSync, writeFileSync, copyFileSync, rmSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const dist = join(root, 'dist');
+// 先清空旧的构建产物，避免部署时混入过期文件
+rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist, { recursive: true });
 
 // 1) 读取可编辑的数据源
