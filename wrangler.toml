@@ -1,0 +1,8 @@
+name = "cloudflare-photo-album"
+main = "worker.js"
+compatibility_date = "2025-06-01"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+run_worker_first = true
